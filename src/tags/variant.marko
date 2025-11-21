@@ -1,0 +1,50 @@
+import { env } from "process";
+export interface Input {
+  handle?: string;
+}
+<if=input.handle>
+  <html-script
+    type="module"
+    src="https://cdn.shopify.com/storefront/web-components.js"/>
+  <shopify-store
+    store-domain="ngtester.myshopify.com"
+    country="SE"
+    language="sv"
+    public-access-token=env.VITE_SHOPIFY_PUBLIC_TOKEN/>
+  <div class="product-layout">
+    <div class="product-card">
+      <!-- Set product you want to display -->
+      <shopify-context type="product" handle=input.handle>
+        <template>
+          <div class="product-card__container">
+            <div class="product-card__details">
+              <div class="product-card__info">
+                <p class="product-card__vendor-text">
+                  <shopify-data query="product.vendor"/>
+                </p>
+                <h1 class="product-card__title">
+                  <shopify-data query="product.title"/>
+                </h1>
+                <div class="product-card__price">
+                  <span>
+                    <shopify-money query="product.selectedOrFirstAvailableVariant.price"/>
+                    <shopify-money
+                      class="product-card__compare-price"
+                      query="product.selectedOrFirstAvailableVariant.compareAtPrice"/>
+                  </span>
+                </div>
+              </div>
+              <shopify-variant-selector/>
+              <button
+                class="product-card__add-button"
+                onclick="document.querySelector('shopify-cart').addLine(event); document.querySelector('shopify-cart').showModal()">
+                Add to cart
+              </button>
+            </div>
+          </div>
+        </template>
+      </shopify-context>
+    </div>
+    <shopify-cart id="cart"/>
+  </div>
+</if>

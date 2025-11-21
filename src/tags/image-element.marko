@@ -1,0 +1,31 @@
+import {
+  generateSizesAttribute,
+  generateSrcSet,
+  type PictureProps,
+} from "./product-image";
+export interface Input extends PictureProps {
+  class?: string;
+}
+static const DEFAULT_SIZE = 1920;
+<let/sizes=(
+  typeof input.imageSizes === "string"
+    ? input.imageSizes
+    : generateSizesAttribute(input.imageSizes)
+)>
+<let/srcSet=generateSrcSet({
+  src: input.src,
+  format: input.format,
+  imageSizes:
+    typeof input.imageSizes === "string"
+      ? [input.imageSizes]
+      : input.imageSizes,
+  quality: input.quality,
+})>
+
+<img
+  class=input.class
+  src=`${input.src}?w=${DEFAULT_SIZE}?fm=${input.format}&q=${input.quality}`
+  srcset=srcSet
+  sizes=sizes
+  alt=input.alt
+  loading=input.loading>

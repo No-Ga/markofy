@@ -1,0 +1,44 @@
+import { tv } from "tailwind-variants";
+static import type { ContentRowFragment } from "~/lib/contentful/_generated/graphql";
+import { getFragmentData } from "../lib/contentful/_generated";
+import { splashFragment } from "../lib/contentful/fragments/splash.fragment";
+export interface Input {
+  data: ContentRowFragment;
+  class?: string;
+}
+<const/contentRowVariants=tv({
+  base: "grid content-row w-full overflow-hidden",
+  variants: {
+    numberOfColumns: {
+      "1": "lg:grid-cols-1",
+      "2": "lg:grid-cols-2",
+      "3": "lg:grid-cols-3",
+      "4": "grid-cols-2 xl:grid-cols-4",
+      "1+2": "xl:grid-cols-[1fr_2fr]",
+    } as Record<string, string>,
+    type: {
+      "Full-width": "",
+      "With margins": "my-6 gap-x-4 gap-y-6 lg:gap-4 lg:my-12",
+    } as Record<string, string>,
+  },
+  defaultVariants: {
+    numberOfColumns: "1",
+    type: "Full-width",
+  },
+})>
+<if=Boolean(input.data)>
+  <section class=contentRowVariants({
+    numberOfColumns: input.data.numberOfColumns ?? undefined,
+    type: input.data.type ?? undefined,
+    className: input.class,
+  })>
+    <for|item| of=(input.data.contentCollection?.items)>
+      <if=item?.__typename === "Splash">
+        <let/data=getFragmentData(splashFragment, item)>
+        <splash
+          data=data
+          numberOfColumns=(input.data.numberOfColumns ?? undefined)/>
+      </if>
+    </for>
+  </section>
+</if>

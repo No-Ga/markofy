@@ -1,0 +1,32 @@
+export interface Input {
+  product: any;
+}
+static const formatter = new Intl.NumberFormat("sv-SE", {
+  style: "currency",
+  currency: "SEK",
+});
+
+<log=input.product>
+<let/src=(input.product.media.edges[0].node.previewImage.url)>
+
+<div class="border border-gray-100 overflow-hidden">
+  <a href=("/product/" + input.product.handle)>
+    <div class="relative">
+      <image-component src=src/>
+      <if=(input.product.variantsCount.count > 1)>
+        <product-badge>+ More variants</product-badge>
+      </if>
+    </div>
+    <div class="p-4">
+      <h4 class="font-sans text-xs font-bold uppercase">
+        ${input.product.vendor}
+      </h4>
+      <h3 class="overflow-hidden font-sans text-sm overflow-ellipsis whitespace-nowrap">
+        ${input.product.title}
+      </h3>
+      <span class="text-xs">
+        ${formatter.format(input.product.priceRange.minVariantPrice.amount)}
+      </span>
+    </div>
+  </a>
+</div>

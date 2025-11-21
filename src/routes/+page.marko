@@ -1,0 +1,13 @@
+import { getFragmentData } from "../lib/contentful/_generated";
+import { contentRowFragment } from "../lib/contentful/fragments/contentRow.fragment";
+server import { caller } from "../lib/trpc/trpc-server";
+<main>
+  <await|landingPage|=caller().contentful.landingPage()>
+    <for|component| of=(landingPage?.componentsCollection?.items)>
+      <if=component?.__typename === "ContentRow">
+        <let/data=getFragmentData(contentRowFragment, component)>
+        <content-row data=data/>
+      </if>
+    </for>
+  </await>
+</main>

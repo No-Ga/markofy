@@ -1,0 +1,25 @@
+import {
+  generateSizesAttribute,
+  generateSrcSet,
+  type PictureProps,
+} from "./product-image";
+export interface Input extends Omit<PictureProps, "alt" | "loading"> {
+  media: HTMLSourceElement["media"];
+}
+<let/type=(input.format === "jpg" ? "image/jpeg" : `image/${input.format}`)>
+<let/sizes=(
+  typeof input.imageSizes === "string"
+    ? input.imageSizes
+    : generateSizesAttribute(input.imageSizes)
+)>
+<let/srcSet=generateSrcSet({
+  src: input.src,
+  format: input.format,
+  imageSizes:
+    typeof input.imageSizes === "string"
+      ? [input.imageSizes]
+      : input.imageSizes,
+  quality: input.quality,
+})>
+
+<source srcset=srcSet type=type media=input.media sizes=sizes>

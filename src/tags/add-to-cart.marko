@@ -1,0 +1,41 @@
+import { cartFragment } from "../lib/shopify/fragments/cart.fragment";
+import { getFragmentData } from "../lib/shopify/_generated";
+export interface Input {
+  productId: string;
+}
+client {
+  import { client } from "../lib/trpc/trpc-client";
+  async function handler(merchandiseId: string) {
+    let cartId;
+    const cookies = decodeURIComponent(document.cookie);
+    for (const cookie of cookies.split("; ")) {
+      const [name, value, key] = cookie.split("=");
+      if (name === "ng_cart") cartId = value + "=" + key;
+    }
+
+    if (!cartId) {
+      const response = await client.shopify.createCart.mutate();
+      const cart = getFragmentData(cartFragment, response);
+      if (!cart) return;
+      document.cookie = `ng_cart=${cart.id};maxAge=3600;path=/`;
+      cartId = cart.id;
+    }
+    void client.shopify.addCartLines.mutate({
+      cartId,
+      lines: [
+        {
+          merchandiseId,
+          quantity: 1,
+        },
+      ],
+    });
+  }
+}
+
+<button
+  class="bg-black p-4 w-full text-white"
+  onClick() {
+    void handler(input.productId);
+  }>
+  Add to Cart
+</button>

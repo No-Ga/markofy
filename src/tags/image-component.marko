@@ -1,0 +1,47 @@
+import {
+  type PictureProps,
+  DEFAULT_IMAGE_SIZES,
+  DEFAULT_QUALITY,
+  DEFAULT_FORMAT,
+  DEFAULT_LOADING,
+} from "./product-image";
+export interface Input extends PictureProps {
+  class?: string;
+}
+
+<picture class="bg-gray-50 block overflow-hidden " + input.class>
+  <if=typeof input.mobileSrc === "string">
+    <image-source
+      src=input.mobileSrc
+      format="avif"
+      quality=(input.quality ?? DEFAULT_QUALITY)
+      imageSizes=(input.imageSizes ?? DEFAULT_IMAGE_SIZES)
+      media="(max-width: 768px)"/>
+    <image-source
+      src=input.mobileSrc
+      format="webp"
+      quality=(input.quality ?? DEFAULT_QUALITY)
+      imageSizes=(input.imageSizes ?? DEFAULT_IMAGE_SIZES)
+      media="(max-width: 768px)"/>
+  </if>
+  <image-source
+    src=input.src
+    format="avif"
+    quality=(input.quality ?? DEFAULT_QUALITY)
+    imageSizes=(input.imageSizes ?? DEFAULT_IMAGE_SIZES)
+    media="(min-width: 769px)"/>
+  <image-source
+    src=input.src
+    format="webp"
+    quality=(input.quality ?? DEFAULT_QUALITY)
+    imageSizes=(input.imageSizes ?? DEFAULT_IMAGE_SIZES)
+    media="(min-width: 769px)"/>
+  <image-element
+    class="aspect-square w-full object-cover mix-blend-multiply"
+    src=input.src
+    alt=input.alt
+    loading=(input.loading ?? DEFAULT_LOADING)
+    format=(input.format ?? DEFAULT_FORMAT)
+    quality=(input.quality ?? DEFAULT_QUALITY)
+    imageSizes=(input.imageSizes ?? DEFAULT_IMAGE_SIZES)/>
+</picture>

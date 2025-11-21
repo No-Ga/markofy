@@ -1,0 +1,26 @@
+{
+  "<shopify-store>": {
+    "html": true
+  },
+  "<shopify-context>": {
+    "html": true
+  },
+  "<shopify-variant-selector>": {
+    "html": true
+  },
+  "<shopify-money>": {
+    "html": true
+  },
+  "<shopify-cart>": {
+    "html": true
+  },
+  "<shopify-data>": {
+    "html": true
+  },
+  "<shopify-media>": {
+    "html": true
+  },
+  "<shopify-list-context>": {
+    "html": true
+  }
+}

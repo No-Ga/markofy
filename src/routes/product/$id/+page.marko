@@ -1,0 +1,95 @@
+// server import { caller } from "../../../lib/trpc/trpc-server";
+// static const formatter = new Intl.NumberFormat("sv-SE", {
+//   style: "currency",
+//   currency: "SEK",
+// });
+// <try>
+//   <@catch|error|>
+//     <div>
+//       <h1 class="text-4xl font-bold text-gray-900 mb-4">
+//         Error
+//       </h1>
+//       <span>${(error as any).message}</span>
+//     </div>
+//   </@catch>
+//   <await|product|=caller().shopify.product($global.params.id)>
+//     <div class="grid grid-cols-2 gap-4">
+//       <let/src=(product?.media.edges[0]?.node.previewImage?.url ?? "")>
+//       <image-component src=src/>
+//       <div class="flex flex-col gap-2">
+//         // <h2>${product?.vendor}</h2>
+//         // <h1>${product?.title}</h1>
+//         // <span>
+//         //   ${formatter.format(product?.priceRange.minVariantPrice.amount)}
+//         // </span>
+//         <variant handle=product?.handle/>
+//         // <add-to-cart productId=(
+//         //   product?.selectedOrFirstAvailableVariant?.id ?? ""
+//         // )/>
+//       </div>
+//     </div>
+//   </await>
+// </try>
+<shopify-context type="product" handle=($global.params.id)>
+  <template>
+    <div class="grid grid-cols-2 gap-4 py-4">
+      <div class="col-span-1 grid grid-cols-[auto_1fr] gap-2 place-content-start aspect-[4/5]">
+        <div class="grid grid-flow-row gap-2 place-content-start overflow-auto scrollbar-none">
+          <shopify-list-context
+            type="image"
+            query="product.selectedOrFirstAvailableVariant.product.images"
+            first="10"
+            skip="1">
+            <template>
+              <div class="bg-gray-100">
+                <shopify-media
+                  layout="fixed"
+                  width="80"
+                  height="80"
+                  query="image"/>
+              </div>
+            </template>
+          </shopify-list-context>
+        </div>
+        <div class="bg-gray-100">
+          <shopify-media
+            layout="constrained"
+            aspect-ratio="1"
+            query="product.selectedOrFirstAvailableVariant.image"/>
+        </div>
+        <div class="col-span-2">
+          <h3 class="text-lg font-bold">
+            Description
+          </h3>
+          <shopify-data query="product.description"/>
+        </div>
+      </div>
+      <div class="col-span-1 grid grid-flow-row gap-2 content-start">
+        <span class="text-sm text-gray-500">
+          <shopify-data query="product.vendor"/>
+        </span>
+        <span class="text-lg font-bold">
+          <shopify-data query="product.title"/>
+        </span>
+        <span class="text-sm">
+          <shopify-money query="product.selectedOrFirstAvailableVariant.price"/>
+        </span>
+        <span class="text-sm text-gray-500 line-through">
+          <shopify-money query="product.selectedOrFirstAvailableVariant.compareAtPrice"/>
+        </span>
+        <shopify-variant-selector/>
+        <button class="bg-black p-4 w-full text-white" onclick="addToCart()">
+          Add to cart
+        </button>
+      </div>
+    </div>
+  </template>
+</shopify-context>
+
+<html-script>
+  function addToCart() {
+    const cart = document.getElementById('cart');
+    cart.addLine(event);
+    cart.showModal();
+  }
+</html-script>

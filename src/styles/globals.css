@@ -1,0 +1,65 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@layer base {
+  .image {
+    @apply mix-blend-multiply;
+  }
+}
+@layer utilities {
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@layer shopify {
+  /** The form has a flexbox layout, easily change the flex layout **/
+  shopify-variant-selector::part(form) {
+    gap: 24px;
+    flex-direction: column-reverse;
+  }
+  /** Change the labels in the form **/
+  shopify-variant-selector::part(label) {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: block;
+  }
+  /** Change the radio buttons in the form to no longer be pills, but just text **/
+  shopify-variant-selector::part(radio) {
+    font-weight: normal;
+    border: 0;
+    border-radius: 0;
+    background-color: inherit;
+    color: #000;
+    font-size: 16px;
+    border-bottom: 0px solid #000;
+    transition: border-bottom 100ms ease-in-out;
+  }
+  /** Underline the radio button when hovering over it **/
+  shopify-variant-selector::part(radio):hover {
+    border-bottom: 2px solid #000;
+  }
+  /** Change the font and underline the radio button when it is selected **/
+  shopify-variant-selector::part(radio-selected) {
+    color: #000;
+    font-weight: bold;
+    border-bottom: 2px solid #000;
+  }
+  /** Change the swatch shape **/
+  shopify-variant-selector::part(color-swatch) {
+    border-radius: 4px;
+  }
+  shopify-variant-selector::part(color-swatch):after {
+    border-radius: 4px;
+  }
+  shopify-variant-selector::part(select) {
+    @apply w-full rounded-none;
+  }
+}

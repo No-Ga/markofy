@@ -1,0 +1,77 @@
+import { cartFragment } from "../lib/shopify/fragments/cart.fragment";
+import { getFragmentData } from "../lib/shopify/_generated";
+<let/open=false>
+static const formatter = new Intl.NumberFormat("sv-SE", {
+  style: "currency",
+  currency: "SEK",
+});
+
+<button onClick() {
+  open = true;
+}>
+  Cart
+</button>
+client {
+  import { client } from "../lib/trpc/trpc-client";
+  async function handler() {
+    let cartId;
+    const cookies = decodeURIComponent(document.cookie);
+    for (const cookie of cookies.split("; ")) {
+      const [name, value, key] = cookie.split("=");
+      if (name === "ng_cart") cartId = value + "=" + key;
+    }
+    if (!cartId) {
+      return;
+    }
+    const response = await client.shopify.cart.query(cartId);
+    return getFragmentData(cartFragment, response);
+  }
+}
+
+<if=open>
+  <await|cart|=handler()>
+    <div class="fixed inset-0 flex w-full h-full items-stretch justify-end z-20">
+      <div
+        class="bg-black/50 absolute inset-0 w-full h-full animate-in fade-in"
+        onClick() {
+          open = false;
+        }/>
+      <div class="bg-white shadow z-10 min-w-96 flex flex-col animate-in slide-in-from-right">
+        <div class="flex items-center justify-between p-4 border-b border-gray-200">
+          <h2>Cart</h2>
+          <button onClick() {
+            open = false;
+          }>
+            ×
+          </button>
+        </div>
+        <if=cart?.lines>
+          <ul class="grow flex flex-col">
+            <for|line| of=(cart.lines.edges)>
+              <li class="grid grid-cols-[auto_1fr] gap-x-2 grid-rows-2">
+                <image-component
+                  class="w-20 h-20 object-cover rounded row-span-3"
+                  src=(line.node.merchandise.image?.url ?? "")/>
+                <h3>${line.node.merchandise.title}</h3>
+                <p>${line.node.quantity}</p>
+                <p>
+                  ${formatter.format(line.node.cost.amountPerQuantity.amount)}
+                </p>
+              </li>
+            </for>
+          </ul>
+          <div class="flex flex-col items-center justify-between p-4 border-t border-gray-200">
+            <span>
+              Total: ${formatter.format(cart.cost.totalAmount.amount)}
+            </span>
+            <a
+              href=cart.checkoutUrl
+              class="bg-black text-white p-4 w-full text-center">
+              Checkout
+            </a>
+          </div>
+        </if>
+      </div>
+    </div>
+  </await>
+</if>

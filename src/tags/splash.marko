@@ -1,0 +1,111 @@
+static import type { SplashFragment } from "../lib/contentful/_generated/graphql";
+static import { getFragmentData } from "../lib/contentful/_generated";
+static import { assetFragment } from "../lib/contentful/fragments/asset.fragment";
+static import { tv } from "tailwind-variants";
+export interface Input {
+  data: SplashFragment;
+  numberOfColumns?: string;
+}
+static const splashVariants = tv({
+  slots: {
+    base: "grid relative text-white content-start gap-4",
+    content: "flex flex-col gap-2 z-10",
+    media: "aspect-[4/5] lg:aspect-square w-full object-cover",
+    heading: "leading-tight tracking-tight",
+    subheading: "",
+    link: "",
+  },
+  variants: {
+    numberOfColumns: {
+      "1": {
+        heading: "text-4xl lg:text-6xl",
+      },
+      "2": {
+        heading: "text-3xl lg:text-4xl",
+      },
+      "3": {
+        heading: "text-2xl lg:text-3xl",
+      },
+      "4": {
+        heading: "text-xl lg:text-2xl",
+      },
+      "1+2": {
+        heading: "text-4xl lg:text-6xl",
+      },
+    },
+    contentPosition: {
+      Center: {
+        content:
+          "justify-self-center self-center text-center place-items-center gap-4",
+      },
+      "Top left": {
+        content: "justify-self-start self-start items-start text-left",
+      },
+      "Bottom left": {
+        content: "justify-self-start self-end items-start text-left",
+      },
+      "Outside bottom": {
+        base: "text-black",
+        content: "items-start",
+      },
+    },
+    textColor: {
+      Black: {
+        base: "text-black",
+      },
+      White: {
+        base: "text-white",
+      },
+    },
+  },
+  compoundVariants: [
+    {
+      contentPosition: ["Bottom left", "Top left", "Center"],
+      className: {
+        content: "col-span-full row-span-full px-4 py-6 lg:p-8",
+        media: "col-span-full row-span-full",
+      },
+    },
+    {
+      contentPosition: ["Outside bottom"],
+      className: {
+        base: "text-black",
+      },
+    },
+    {
+      contentPosition: ["Outside bottom"],
+      numberOfColumns: "1",
+      className: {
+        heading: "text-3xl lg:text-4xl",
+      },
+    },
+  ],
+  defaultVariants: {
+    contentPosition: "Bottom left",
+  },
+});
+
+<if=Boolean(input.data)>
+  <let/desktopImage=getFragmentData(assetFragment, input.data.desktopImage)>
+  <let/classes=splashVariants({
+    contentPosition: input.data.contentPosition as any,
+    numberOfColumns: input.numberOfColumns as any,
+    textColor: input.data.textColor as any,
+  })>
+  <if=desktopImage?.url>
+    <div class=classes.base()>
+      <image-component src=desktopImage?.url class=classes.media()/>
+      <div class=classes.content()>
+        <h2 class=classes.heading()>
+          ${input.data.header}
+        </h2>
+        <p class=classes.subheading()>
+          ${input.data.subheading}
+        </p>
+        <a class=classes.link() href="/">
+          ${input.data.linkText}
+        </a>
+      </div>
+    </div>
+  </if>
+</if>
