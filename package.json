@@ -18,6 +18,7 @@
     "@tanstack/query-core": "^5.90.3",
     "@trpc/client": "^11.1.2",
     "@trpc/server": "^11.1.2",
+    "dotenv": "^17.2.3",
     "gqlmin": "^0.3.1",
     "marko": "^6.0.0",
     "superjson": "^2.2.2",
